@@ -1,0 +1,41 @@
+Dataset Explorer verification results
+Automated checks used Streamlit AppTest with inline CSV uploads and the local app URL.
+
+AUTOMATED CHECKS
+Supplied CSV overview and category chart — PASS
+  Expected: 5 rows; 2 columns; value missing=1 (20%); extra duplicates=1; A=30; B=10
+  Observed: rows=5; columns=2; value missing=1 (20.00%); extra exact duplicates=1; category sums A=30.0, B=10.0; bar chart rendered=True
+Text-only CSV — PASS
+  Expected: Overview remains available; clear chart-unavailable message; no chart
+  Observed: rows=2; columns=2; messages=['The chart is unavailable because this CSV has no columns pandas read as numeric. The overview above is still available.']; chart count=0
+Empty CSV — PASS
+  Expected: Clear empty-file error
+  Observed: errors=['This file is empty. Please choose a CSV file with a header and data.']
+Wrong file type — PASS
+  Expected: Clear wrong-file-type error
+  Observed: errors=['Wrong file type. Please choose a file with the .csv extension.']
+All-missing numeric group — PASS
+  Expected: Group A shows No data (not zero); group B sums to 7
+  Observed: totals={'B': '7.0', 'A': 'No data'}; chart includes only usable group; info=[]
+Local server response — PASS
+  Expected: HTTP 200 from the running app
+  Observed: HTTP 200
+
+MANUAL BROWSER CHECKS — NOT CHECKED (browser file-upload interactions were not performed)
+Supplied CSV upload — NOT CHECKED: Open http://localhost:8502/, upload the supplied comma-separated CSV, and confirm the overview plus A=30 and B=10.
+Text-only CSV — NOT CHECKED: Upload a CSV with only text columns; confirm row/column overview remains and a clear no-numeric-columns message appears.
+Empty CSV — NOT CHECKED: Upload a zero-byte file named empty.csv; confirm the empty-file message.
+Wrong file type — NOT CHECKED: Upload a small .txt file; confirm the wrong-file-type message.
+All-missing group — NOT CHECKED: Upload a CSV where one category has only blank numeric values; confirm its total says No data, never 0.
+
+SPACE-ONLY COUNT CHANGE — AUTOMATED CHECKS (2026-11-04)
+Six-row CSV with spaces, ordinary missing values, numeric 0, and string "0" — PASS
+  Expected: Per-column and total space-only counts; blank/NaN values excluded; numeric 0 and string "0" excluded; existing chart totals preserved.
+  Observed: Space-only counts category=0, value=0, text=2; total=2. Missing counts value=1 and text=1. A=30, B=10, C=0. No AppTest exceptions.
+Full-table count beyond preview — PASS
+  Expected: A space-only cell on row 101 is counted even though the preview shows only the first 100 rows; chart uses the full table.
+  Observed: Source rows=101; preview rows=100; row 101's space-only cell was counted (total=1); chart total A=101. No AppTest exceptions.
+Local app server after change — PASS
+  Expected: App responds at the existing local URL.
+  Observed: http://localhost:8502/ returned HTTP 200.
+Manual browser appearance check — NOT CHECKED
